@@ -1,3 +1,4 @@
+import { goto } from '$app/navigation';
 import { pb } from '$lib/pocketbase';
 import { error } from '@sveltejs/kit';
 import type { AuthProviderInfo } from 'pocketbase';
@@ -24,13 +25,8 @@ export const load = (async ({ url }) => {
 			provider.name,
 			code,
 			provider.codeVerifier,
-			`${url.protocol}//${url.host}/account`,
-			{
-				emailVisibility: false
-			}
+			'http://localhost:5173/account/oauth2'
 		);
 
-	console.log(result);
-
-	return {};
+	await goto('/account');
 }) satisfies PageLoad;

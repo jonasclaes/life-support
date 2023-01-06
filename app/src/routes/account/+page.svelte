@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { currentUser, pb } from '$lib/pocketbase';
 	import { Record, type AuthMethodsList } from 'pocketbase';
-	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -51,41 +50,54 @@
 			</div>
 			<button class="btn" on:click={signOut}>Sign Out</button>
 		{:else}
-			<form on:submit|preventDefault={login}>
-				<div class="form-control w-full">
-					<label class="label" for="username">
-						<span class="label-text">Username:</span>
-					</label>
-					<input
-						type="text"
-						placeholder="johndoe"
-						class="input input-bordered w-full"
-						id="username"
-						bind:value={username}
-					/>
+			<div class="flex flex-col w-full">
+				<div class="card">
+					<form on:submit|preventDefault={login}>
+						<div class="form-control w-full">
+							<label class="label" for="username">
+								<span class="label-text">Username:</span>
+							</label>
+							<input
+								type="text"
+								placeholder="johndoe"
+								class="input input-bordered w-full"
+								id="username"
+								bind:value={username}
+							/>
+						</div>
+						<div class="form-control w-full">
+							<label class="label" for="password">
+								<span class="label-text">Password:</span>
+							</label>
+							<input
+								type="password"
+								class="input input-bordered w-full"
+								id="password"
+								bind:value={password}
+							/>
+						</div>
+						<button class="btn btn-block mt-4" type="submit">Login</button>
+					</form>
 				</div>
-				<div class="form-control w-full">
-					<label class="label" for="password">
-						<span class="label-text">Password:</span>
-					</label>
-					<input
-						type="password"
-						class="input input-bordered w-full"
-						id="password"
-						bind:value={password}
-					/>
+				<div class="divider">OR</div>
+				<div class="card">
+					{#if authMethods?.authProviders === undefined || authMethods.authProviders.length === 0}
+						<p class="text-center italic">No OAuth2 providers have been set up.</p>
+					{/if}
+					{#each authMethods?.authProviders?.sort((a, b) => {
+						if (a.name < b.name) return -1;
+						if (a.name > b.name) return 1;
+						return 0;
+					}) || [] as authProvider}
+						<a
+							class="btn btn-primary"
+							href={authProvider.authUrl + 'http://localhost:5173/account/oauth2'}
+							on:click={() => localStorage.setItem('provider', JSON.stringify(authProvider))}
+							>{authProvider.name}</a
+						>
+					{/each}
 				</div>
-				<button class="btn btn-block mt-4" type="submit">Login</button>
-			</form>
-
-			{#each authMethods?.authProviders || [] as authProvider}
-				<a
-					class="btn btn-primary"
-					href={authProvider.authUrl}
-					on:click={() => localStorage.setItem('provider', JSON.stringify(authProvider))}
-					>{authProvider.name}</a
-				>
-			{/each}
+			</div>
 		{/if}
 	</div>
 </div>
