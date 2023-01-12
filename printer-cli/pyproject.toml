@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "printer-cli"
+version = "0.1.0"
+description = ""
+authors = ["Jonas Claes <jonas@jonasclaes.be>"]
+readme = "README.md"
+packages = [{include = "printer_cli"}]
+
+[tool.poetry.scripts]
+printer-cli = "printer_cli.main:app"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+typer = {extras = ["all"], version = "^0.7.0"}
+autopep8 = "^2.0.1"
+pyserial = "^3.5"
+python-escpos = {git = "https://github.com/python-escpos/python-escpos.git"}
+pocketbase = {git = "https://github.com/vaphes/pocketbase.git", rev = "0.8.0-rc2"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
