@@ -1,34 +1,45 @@
+from typing import Callable
 import typer
+from rich import print
 from rich.prompt import Prompt
-from pocketbase import PocketBase
+from printer_cli.lib.api import API, TodoListModel, TodoModel
 
-from printer_cli.printer import Printer
+from printer_cli.lib.printer import Printer
 
 app = typer.Typer()
 
 
 @app.command()
-def todos(name: str = "person"):
-    # printer = Printer()
-    print("Printing todo's")
+def todos(done: bool = False, list_name: str = None):
+    print("[bold]Printing to do's[/bold]")
 
-    client = PocketBase('http://127.0.0.1:8090')
+    printer = Printer()
 
     username = Prompt.ask("Enter your username :sunglasses:")
     password = Prompt.ask("Enter your password :key:", password=True)
 
-    client.collection('users').auth_with_password(username, password)
+    api = API(base_url="http://localhost:8090/")
+    api.login(username, password)
 
-    todos = client.collection('todos').get_full_list(query_params={
-        "filter": "checked = true",
-        "expand": "todo_list"
-    })
+    todo_lists = api.get_todo_lists()
 
-    for todo in todos:
-        print(todo.expand['todo_list'].name, "|", todo.content)
+    if done:
+        todos = api.get_todos()
+    else:
+        todos = api.get_todos(query_params={
+            "filter": "checked = false"
+        })
 
+    if list_name:
+        todo_list_filter: Callable[[
+            TodoListModel], bool] = lambda todo_list: todo_list.name == list_name
+        todo_lists = filter(todo_list_filter, todo_lists)
+
+    printer.print_todo_lists(todo_lists, todos)
+
+    print(":white_check_mark: [bold green]To do's have been printed![/bold green]")
 
 @app.command()
 def test():
     printer = Printer()
-    printer.test_print()
+    printer.print_test()
