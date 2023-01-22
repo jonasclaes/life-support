@@ -5,6 +5,7 @@ from rich.prompt import Prompt
 from printer_cli.lib.api import API, TodoListModel, TodoModel
 
 from printer_cli.lib.printer import Printer
+from printer_cli.lib.util import Util
 
 app = typer.Typer()
 
@@ -15,11 +16,11 @@ def todos(done: bool = False, list_name: str = None):
 
     printer = Printer()
 
-    username = Prompt.ask("Enter your username :sunglasses:")
-    password = Prompt.ask("Enter your password :key:", password=True)
-
     api = API(base_url="http://localhost:8090/")
-    api.login(username, password)
+
+    Util.login(api)
+
+    print(api.client.auth_store.token)
 
     todo_lists = api.get_todo_lists()
 
@@ -37,7 +38,9 @@ def todos(done: bool = False, list_name: str = None):
 
     printer.print_todo_lists(todo_lists, todos)
 
-    print(":white_check_mark: [bold green]To do's have been printed![/bold green]")
+    print(
+        ":white_check_mark: [bold green]To do's have been printed![/bold green]")
+
 
 @app.command()
 def test():
