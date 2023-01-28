@@ -16,11 +16,9 @@ def todos(done: bool = False, list_name: str = None):
 
     printer = Printer()
 
-    api = API(base_url="http://localhost:8090/")
+    api = Util.get_api()
 
-    Util.login(api)
-
-    print(api.client.auth_store.token)
+    Util.authenticate(api)
 
     todo_lists = api.get_todo_lists()
 
