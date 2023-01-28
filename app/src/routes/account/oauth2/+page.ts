@@ -1,3 +1,4 @@
+import { env } from '$env/dynamic/public';
 import { goto } from '$app/navigation';
 import { pb } from '$lib/pocketbase';
 import { error } from '@sveltejs/kit';
@@ -25,7 +26,7 @@ export const load = (async ({ url }) => {
 			provider.name,
 			code,
 			provider.codeVerifier,
-			'http://localhost:5173/account/oauth2'
+			`${env.PUBLIC_BASE_URL}/account/oauth2`
 		);
 
 	await goto('/account');

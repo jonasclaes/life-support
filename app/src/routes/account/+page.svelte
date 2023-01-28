@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { env } from '$env/dynamic/public';
 	import { currentUser, pb } from '$lib/pocketbase';
 	import { Record, type AuthMethodsList } from 'pocketbase';
 	import type { PageData } from './$types';
@@ -91,7 +92,7 @@
 					}) || [] as authProvider}
 						<a
 							class="btn btn-primary"
-							href={authProvider.authUrl + 'http://localhost:5173/account/oauth2'}
+							href={authProvider.authUrl + `${env.PUBLIC_BASE_URL}/account/oauth2`}
 							on:click={() => localStorage.setItem('provider', JSON.stringify(authProvider))}
 							>{authProvider.name}</a
 						>
