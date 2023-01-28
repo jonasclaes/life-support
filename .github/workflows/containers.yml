@@ -10,7 +10,7 @@ jobs:
   docker:
     strategy:
       matrix:
-        application: ['pocketbase', 'app']
+        application: ['pocketbase', 'app', 'printer-cli']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
