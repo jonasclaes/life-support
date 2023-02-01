@@ -41,6 +41,24 @@ def todos(done: bool = False, list_name: str = None):
 
 
 @app.command()
+def interactive():
+    print("[bold]Printing in interactive mode, enter :quit to stop.[/bold]")
+
+    printer = Printer()
+
+    text = Prompt.ask("Text")
+
+    while text != ":quit":
+        printer.printer.textln(text)
+        text = Prompt.ask("Text")
+
+    printer.printer.cut()
+
+    print(
+        ":white_check_mark: [bold green]Printing succeeded![/bold green]")
+
+
+@app.command()
 def test():
     printer = Printer()
     printer.print_test()
